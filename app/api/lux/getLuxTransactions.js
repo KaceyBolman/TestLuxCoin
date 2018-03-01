@@ -6,21 +6,12 @@ import type { LuxTransactions } from './types';
 
 export type GetLuxTransactionsParams = {
   walletId: string,
-  fromBlock: number,
-  toBlock: number,
+  count: number,
+  skip: number,
 };
 
-/**
- * Returns account transactions (both sent and received) from a range of blocks.
- * The response also includes pending transactions.
- * @param ca (the TLS certificate)
- * @param walletId
- * @param fromBlock (in the past)
- * @param toBlock (more recent)
- * @returns {*}
- */
 export const getLuxTransactions = (
-  { walletId, fromBlock, toBlock }: GetLuxTransactionsParams
+  { walletId, count, skip }: GetLuxTransactionsParams
 ): Promise<LuxTransactions> => (
   request({
     hostname: LUX_API_HOST,
@@ -32,8 +23,8 @@ export const getLuxTransactions = (
     method: 'listtransactions',
     params: [
       walletId,
-      toBlock - fromBlock,
-      fromBlock
+      count,
+      skip
     ],
   })
 );

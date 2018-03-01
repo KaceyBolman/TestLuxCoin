@@ -7,10 +7,8 @@ export const formattedWalletAmount = (
   withCurrency: boolean = true,
 ) => {
   let formattedAmount;
-  if(amount == 0) 
-    formattedAmount = 0;
-  else
-    formattedAmount = amount.toFormat(DECIMAL_PLACES_IN_LUX);
+  
+  formattedAmount = amount.toFormat(DECIMAL_PLACES_IN_LUX);
 
   if (withCurrency) formattedAmount += ' LUX';
 

@@ -182,8 +182,8 @@ export default class LuxApi {
       const mostRecentBlockNumber: LuxBlockNumber = await getLuxBlockNumber();
       const transactions: LuxTransactions = await getLuxTransactions({
         walletId,
-        fromBlock: Math.max(mostRecentBlockNumber - 10000, 0),
-        toBlock: mostRecentBlockNumber,
+        count: Math.max(mostRecentBlockNumber - 1000, 0),
+        skip: 0,//mostRecentBlockNumber,
       });
       Logger.debug('LuxApi::getTransactions success: ' + stringifyData(transactions));
       const allTxs = await Promise.all(
