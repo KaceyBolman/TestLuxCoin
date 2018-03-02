@@ -21,7 +21,7 @@ export default class LuxWalletsStore extends WalletStore {
   @observable createWalletRequest: Request<CreateWalletResponse> = new Request(this.api.lux.createWallet);
   @observable deleteWalletRequest: Request<DeleteWalletResponse> = new Request(this.api.lux.deleteWallet);
   @observable sendMoneyRequest: Request<CreateTransactionResponse> = new Request(this.api.lux.createTransaction);
-  //@observable getEstimatedGasPriceRequest: Request<GetEstimatedGasPriceResponse> = new Request(this.api.lux.getEstimatedGasPriceResponse);
+  @observable getEstimatedFeeRequest: Request<GetEstimatedFeeResponse> = new Request(this.api.lux.getEstimatedFeeResponse);
   @observable getWalletRecoveryPhraseRequest: Request<GetWalletRecoveryPhraseResponse> = new Request(this.api.lux.getWalletRecoveryPhrase);
   @observable restoreRequest: Request<RestoreWalletResponse> = new Request(this.api.lux.restoreWallet);
   /* eslint-disable max-len */
@@ -49,8 +49,8 @@ export default class LuxWalletsStore extends WalletStore {
       from: wallet.id,
       to: receiver,
       value: new BigNumber(amount),
-      password: password != null ? password : '',
-      gasPrice: LUX_DEFAULT_GAS_PRICE,
+      //password: password != null ? password : '',
+      //gasPrice: LUX_DEFAULT_GAS_PRICE,
     });
     this.refreshWalletsData();
     this.actions.dialogs.closeActiveDialog.trigger();
@@ -64,11 +64,11 @@ export default class LuxWalletsStore extends WalletStore {
     amount: string,
   }) => {
     const { sender, receiver, amount } = transactionDetails;
-    return await this.getEstimatedGasPriceRequest.execute({
-      from: sender,
-      to: receiver,
-      value: new BigNumber(amount),
-      gasPrice: LUX_DEFAULT_GAS_PRICE,
+    return await this.getEstimatedFeeRequest.execute({
+      //from: sender,
+      //to: receiver,
+      blocks: new BigNumber(amount),
+      //gasPrice: LUX_DEFAULT_GAS_PRICE,
     });
   };
 

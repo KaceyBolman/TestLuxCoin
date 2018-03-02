@@ -2,17 +2,15 @@
 import BigNumber from 'bignumber.js';
 import { request } from './lib/request';
 import { LUX_API_HOST, LUX_API_PORT, LUX_API_USER, LUX_API_PWD } from './index';
-import type { LuxTxHash } from './types';
+import type { LuxFee } from './types';
 
-export type SendLuxTransactionParams = {
-  from: string,
-  to: string,
-  value: BigNumber,
+export type GetLuxEstimatedFeeParams = {
+  blocks: number
 };
 
-export const sendLuxTransaction = (
-  { from, to, value }: SendLuxTransactionParams
-): Promise<LuxTxHash> => {
+export const getLuxEstimatedFee = (
+  { blocks }: GetLuxEstimatedFeeParams
+): Promise<LuxFee> => (
   request({
     hostname: LUX_API_HOST,
     method: 'POST',
@@ -20,11 +18,9 @@ export const sendLuxTransaction = (
     auth: LUX_API_USER + ':' + LUX_API_PWD
   }, {
     jsonrpc: '2.0',
-    method: 'sendfrom',
+    method: 'estimatefee',
     params: [
-      from,
-      to,
-      value,
+      blocks
     ]
   })
-};
+);
