@@ -28,7 +28,7 @@ import { sendLuxTransaction } from './sendLuxTransaction';
 import { deleteLuxAccount } from './deleteLuxAccount';
 import { getLuxTransactionByHash } from './getLuxTransaction';
 import { changeLuxAccountPassphrase } from './changeLuxAccountPassphrase';
-import { getLuxEstimatedGas } from './getLuxEstimatedGas';
+import { getLuxEstimatedFee } from './getLuxEstimatedFee';
 import { getLuxTransactions } from './getLuxTransactions';
 import { getLuxBlockNumber } from './getLuxBlockNumber';
 import { getLuxAddressesByAccount } from './getLuxAddressesByAccount';
@@ -182,8 +182,8 @@ export default class LuxApi {
       const mostRecentBlockNumber: LuxBlockNumber = await getLuxBlockNumber();
       const transactions: LuxTransactions = await getLuxTransactions({
         walletId,
-        fromBlock: Math.max(mostRecentBlockNumber - 10000, 0),
-        toBlock: mostRecentBlockNumber,
+        count: Math.max(mostRecentBlockNumber - 1000, 0),
+        skip: 0,//mostRecentBlockNumber,
       });
       Logger.debug('LuxApi::getTransactions success: ' + stringifyData(transactions));
       const allTxs = await Promise.all(
@@ -299,14 +299,14 @@ export default class LuxApi {
   }
 
   async createTransaction(params: CreateTransactionRequest): CreateTransactionResponse {
-    Logger.debug('LuxApi::createTransaction called');
+    Logger.error('LuxApi::createTransaction called');
     try {
       const senderAccount = params.from;
       const { from, to, value, password } = params;
       const txHash: LuxTxHash = await sendLuxTransaction({
         from, to, value
       });
-      Logger.debug('LuxApi::createTransaction success: ' + stringifyData(txHash));
+      Logger.error('LuxApi::createTransaction success: ' + stringifyData(txHash));
       return _createTransaction(senderAccount, txHash);
     } catch (error) {
       Logger.error('LuxApi::createTransaction error: ' + stringifyError(error));
@@ -396,19 +396,20 @@ export default class LuxApi {
     return Promise.resolve(isLuxValidAddress({address}));
   }
 
-  async getEstimatedGasPriceResponse(
-    request: GetEstimatedGasPriceRequest
-  ): GetEstimatedGasPriceResponse {
-    Logger.debug('LuxApi::getEstimatedGasPriceResponse called');
+  async getEstimatedFeeResponse(
+    request: GetEstimatedFeeRequest
+  ): GetEstimatedFeeResponse {
+    Logger.debug('LuxApi::getEstimatedFeeResponse called');
     try {
-      const { from, to, value, gasPrice } = request;
-      const estimatedGas: LuxGas = await getLuxEstimatedGas({
-        ca, from, to, value, gasPrice,
+      //const { blocks } = request;
+      const blocks = 25;
+      const estimatedFee: LuxFee = await getLuxEstimatedFee({
+        blocks,
       });
-      Logger.debug('LuxApi::getEstimatedGasPriceResponse success: ' + stringifyData(estimatedGas));
-      return quantityToBigNumber(estimatedGas).times(request.gasPrice).dividedBy(WEI_PER_LUX);
+      Logger.debug('LuxApi::getEstimatedResponse success: ' + estimatedFee);
+      return quantityToBigNumber(estimatedFee);
     } catch (error) {
-      Logger.error('LuxApi::getEstimatedGasPriceResponse error: ' + stringifyError(error));
+      Logger.error('LuxApi::getEstimatedFeeResponse error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   }
