@@ -7,12 +7,14 @@ import type { LuxTxHash } from './types';
 export type SendLuxTransactionParams = {
   from: string,
   to: string,
-  amount: number,
+  amount: Number
 };
 
 export const sendLuxTransaction = (
   { from, to, amount }: SendLuxTransactionParams
 ): Promise<LuxTxHash> => {
+  let output = {};
+  output[to] = amount;
   request({
     hostname: LUX_API_HOST,
     method: 'POST',
@@ -20,11 +22,10 @@ export const sendLuxTransaction = (
     auth: LUX_API_USER + ':' + LUX_API_PWD
   }, {
     jsonrpc: '2.0',
-    method: 'sendfrom',
+    method: 'sendmany',
     params: [
       from,
-      to,
-      amount,
+      output
     ]
   })
 };
