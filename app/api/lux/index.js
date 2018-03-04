@@ -138,7 +138,7 @@ export default class LuxApi {
       const minconf = 1;
       const maxconf = 9999999;
       const unspent: LuxTransactions = await getLuxUnspentTransactions({minconf, maxconf});
-      Logger.error('LuxApi::getWalletBalance success: ' + walletId + ' ' + stringifyData(unspent));
+      Logger.debug('LuxApi::getWalletBalance success: ' + walletId + ' ' + stringifyData(unspent));
 
       addresses.forEach(function (currAdd, indexAdd, arrayAdd) {
         let sum = 0.0;
@@ -173,7 +173,7 @@ export default class LuxApi {
         const confirmations = 0;
         const balance = await this.getWalletBalance(walletId);
         const amount = quantityToBigNumber(balance);
-        Logger.error('LuxApi::getWallets success: ' + walletId + ' ' + amount);
+        Logger.debug('LuxApi::getWallets success: ' + walletId + ' ' + amount);
         const address = await getLuxAccountAddress({walletId});
         
         try {
@@ -223,10 +223,10 @@ export default class LuxApi {
       const mostRecentBlockNumber: LuxBlockNumber = await getLuxBlockNumber();
       const transactions: LuxTransactions = await getLuxTransactions({
         walletId,
-        count: 10000,
+        count: 100,
         skip: 0,//mostRecentBlockNumber,
       });
-      Logger.error('LuxApi::getTransactions success: ' + stringifyData(transactions));
+      Logger.debug('LuxApi::getTransactions success: ' + stringifyData(transactions));
       const allTxs = await Promise.all(
         transactions.map(async (tx: LuxTransaction) => {
           if(tx.category == 'receive')
