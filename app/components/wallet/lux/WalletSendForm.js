@@ -191,7 +191,7 @@ export default class WalletSendForm extends Component<Props, State> {
             receiver={receiverFieldProps.value}
             totalAmount={totalAmount.toFormat(currencyMaxFractionalDigits)}
             transactionFee={transactionFee.toFormat(currencyMaxFractionalDigits)}
-            amountToNaturalUnits={formattedAmountToNaturalUnits}
+            //amountToNaturalUnits={formattedAmountToNaturalUnits}
             currencyUnit={currencyUnit}
           />
         ) : null}

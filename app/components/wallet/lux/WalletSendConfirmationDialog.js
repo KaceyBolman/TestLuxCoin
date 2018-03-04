@@ -10,7 +10,7 @@ import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import LocalizableError from '../../../i18n/LocalizableError';
 import styles from '../WalletSendConfirmationDialog.scss';
-import { formattedAmountWithoutTrailingZeros } from '../../../utils/formatters';
+import { formattedAmountWithoutTrailingZeros, formattedAmountToFloat } from '../../../utils/formatters';
 import { messages } from '../WalletSendConfirmationDialog';
 
 type Props = {
@@ -20,7 +20,7 @@ type Props = {
   totalAmount: string,
   transactionFee: string,
   onSubmit: Function,
-  amountToNaturalUnits: (amountWithFractions: string) => string,
+  //amountToFloat: (amountWithFractions: string) => Number,
   onCancel: Function,
   isSubmitting: boolean,
   error: ?LocalizableError,
@@ -63,7 +63,7 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
         const { walletPassword } = form.values();
         const transactionData = {
           receiver,
-          amount: amountToNaturalUnits(amount),
+          amount: formattedAmountToFloat(amount),
           password: isWalletPasswordSet ? walletPassword : null,
         };
         this.props.onSubmit(transactionData);

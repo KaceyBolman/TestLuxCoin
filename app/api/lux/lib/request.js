@@ -36,9 +36,11 @@ function typedRequest<Response>(
         if (parsedBody.result != null) {
           resolve(parsedBody.result);
         } else if (parsedBody.error) {
+          console.log("parsedBody.error");
           reject(new Error(parsedBody.error.message));
         } else {
           // TODO: investigate if that can happen! (no Right or Left in a response)
+          console.log("Unknown response from backend.");
           resolve(parsedBody);
           //reject(new Error('Unknown response from backend.'));
         }

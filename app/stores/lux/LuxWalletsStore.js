@@ -48,7 +48,7 @@ export default class LuxWalletsStore extends WalletStore {
     await this.sendMoneyRequest.execute({
       from: wallet.id,
       to: receiver,
-      value: new BigNumber(amount),
+      amount: amount,
       //password: password != null ? password : '',
       //gasPrice: LUX_DEFAULT_GAS_PRICE,
     });
