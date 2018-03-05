@@ -54,8 +54,8 @@ import type {
   CreateWalletRequest,
   CreateWalletResponse,
   CreateTransactionResponse,
-  DeleteWalletRequest,
-  DeleteWalletResponse,
+  RenameWalletRequest,
+  RenameWalletResponse,
   GetSyncProgressResponse,
   GetTransactionsRequest,
   GetTransactionsResponse,
@@ -261,15 +261,15 @@ export default class AdaApi {
     }
   }
 
-  async deleteWallet(request: DeleteWalletRequest): Promise<DeleteWalletResponse> {
-    Logger.debug('AdaApi::deleteWallet called: ' + stringifyData(request));
+  async renameWallet(request: RenameWalletRequest): Promise<RenameWalletResponse> {
+    Logger.debug('AdaApi::renameWallet called: ' + stringifyData(request));
     try {
       const { walletId } = request;
       await deleteAdaWallet({ ca, walletId });
-      Logger.debug('AdaApi::deleteWallet success: ' + stringifyData(request));
+      Logger.debug('AdaApi::renameWallet success: ' + stringifyData(request));
       return true;
     } catch (error) {
-      Logger.error('AdaApi::deleteWallet error: ' + stringifyError(error));
+      Logger.error('AdaApi::renameWallet error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   }

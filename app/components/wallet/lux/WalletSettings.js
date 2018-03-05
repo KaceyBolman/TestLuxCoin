@@ -7,9 +7,9 @@ import LocalizableError from '../../../i18n/LocalizableError';
 import BorderedBox from '../../widgets/BorderedBox';
 import InlineEditingInput from '../../widgets/forms/InlineEditingInput';
 import ReadOnlyInput from '../../widgets/forms/ReadOnlyInput';
-import DeleteWalletButton from '../settings/DeleteWalletButton';
-import DeleteWalletConfirmationDialog from '../settings/DeleteWalletConfirmationDialog';
-import DeleteWalletDialogContainer from '../../../containers/wallet/dialogs/DeleteWalletDialogContainer';
+import RenameWalletButton from '../settings/RenameWalletButton';
+import RenameWalletConfirmationDialog from '../settings/RenameWalletConfirmationDialog';
+import RenameWalletDialogContainer from '../../../containers/wallet/dialogs/RenameWalletDialogContainer';
 import ChangeWalletPasswordDialog from '../settings/ChangeWalletPasswordDialog';
 import ChangeWalletPasswordDialogContainer from '../../../containers/wallet/dialogs/ChangeWalletPasswordDialogContainer';
 import globalMessages from '../../../i18n/global-messages';
@@ -96,9 +96,9 @@ export default class WalletSettings extends Component<Props> {
           {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
 
           <div className={styles.actionButtons}>
-            <DeleteWalletButton
+            <RenameWalletButton
               onClick={() => openDialogAction({
-                dialog: DeleteWalletConfirmationDialog,
+                dialog: RenameWalletConfirmationDialog,
               })}
             />
           </div>
@@ -109,8 +109,8 @@ export default class WalletSettings extends Component<Props> {
           <ChangeWalletPasswordDialogContainer />
         ) : null}
 
-        {isDialogOpen(DeleteWalletConfirmationDialog) ? (
-          <DeleteWalletDialogContainer />
+        {isDialogOpen(RenameWalletConfirmationDialog) ? (
+          <RenameWalletDialogContainer />
         ) : null}
 
       </div>

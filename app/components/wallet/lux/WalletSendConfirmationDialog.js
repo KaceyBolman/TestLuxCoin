@@ -20,51 +20,62 @@ type Props = {
   totalAmount: string,
   transactionFee: string,
   onSubmit: Function,
-  //amountToFloat: (amountWithFractions: string) => Number,
+  amountToNaturalUnits: (amountWithFractions: string) => string,
   onCancel: Function,
   isSubmitting: boolean,
   error: ?LocalizableError,
-  currencyUnit: string,
+  currencyUnit: string
 };
 
 @observer
 export default class WalletSendConfirmationDialog extends Component<Props> {
-
   static contextTypes = {
-    intl: intlShape.isRequired,
+    intl: intlShape.isRequired
   };
 
-  form = new ReactToolboxMobxForm({
-    fields: {
-      walletPassword: {
-        type: 'password',
-        label: this.context.intl.formatMessage(messages.walletPasswordLabel),
-        placeholder: this.context.intl.formatMessage(messages.walletPasswordFieldPlaceholder),
-        value: '',
-        validators: [({ field }) => {
-          if (this.props.isWalletPasswordSet && field.value === '') {
-            return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
-          }
-          return [true];
-        }],
-      },
-    }
-  }, {
-    options: {
-      validateOnChange: true,
-      validationDebounceWait: 250,
+  form = new ReactToolboxMobxForm(
+    {
+      fields: {
+        walletPassword: {
+          type: 'password',
+          label: this.context.intl.formatMessage(messages.walletPasswordLabel),
+          placeholder: this.context.intl.formatMessage(messages.walletPasswordFieldPlaceholder),
+          value: '',
+          validators: [
+            ({ field }) => {
+              if (this.props.isWalletPasswordSet && field.value === '') {
+                return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
+              }
+              return [true];
+            }
+          ]
+        }
+      }
     },
-  });
+    {
+      options: {
+        validateOnChange: true,
+        validationDebounceWait: 250
+      }
+    }
+  );
 
   submit() {
     this.form.submit({
-      onSuccess: (form) => {
-        const { isWalletPasswordSet, receiver, amount, amountToNaturalUnits } = this.props;
+      onSuccess: form => {
+        const {
+          isWalletPasswordSet,
+          receiver,
+          amount,
+          amountToNaturalUnits,
+          totalAmount
+        } = this.props;
         const { walletPassword } = form.values();
         const transactionData = {
           receiver,
-          amount: formattedAmountToFloat(amount),
-          password: isWalletPasswordSet ? walletPassword : null,
+          // amount: amountToNaturalUnits(amount),
+          amount: formattedAmountToFloat(totalAmount),
+          password: isWalletPasswordSet ? walletPassword : null
         };
         this.props.onSubmit(transactionData);
       },
@@ -90,21 +101,21 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
 
     const confirmButtonClasses = classnames([
       'confirmButton',
-      isSubmitting ? styles.submitButtonSpinning : null,
+      isSubmitting ? styles.submitButtonSpinning : null
     ]);
 
     const actions = [
       {
         label: intl.formatMessage(messages.backButtonLabel),
-        onClick: !isSubmitting && onCancel,
+        onClick: !isSubmitting && onCancel
       },
       {
         label: intl.formatMessage(messages.sendButtonLabel),
         onClick: this.submit.bind(this),
         primary: true,
         className: confirmButtonClasses,
-        disabled: !walletPasswordField.isValid,
-      },
+        disabled: !walletPasswordField.isValid
+      }
     ];
 
     const formattedAmount = formattedAmountWithoutTrailingZeros(amount);
@@ -131,14 +142,16 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
           <div className={styles.amountFeesWrapper}>
             <div className={styles.amountWrapper}>
               <div className={styles.amountLabel}>{intl.formatMessage(messages.amountLabel)}</div>
-              <div className={styles.amount}>{formattedAmount}
+              <div className={styles.amount}>
+                {formattedAmount}
                 <span className={styles.currencySymbol}>&nbsp;{currencyUnit}</span>
               </div>
             </div>
 
             <div className={styles.feesWrapper}>
               <div className={styles.feesLabel}>{intl.formatMessage(messages.feesLabel)}</div>
-              <div className={styles.fees}>+{formattedTransactionFee}
+              <div className={styles.fees}>
+                +{formattedTransactionFee}
                 <span className={styles.currencySymbol}>&nbsp;{currencyUnit}</span>
               </div>
             </div>
@@ -146,7 +159,8 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
 
           <div className={styles.totalAmountWrapper}>
             <div className={styles.totalAmountLabel}>{intl.formatMessage(messages.totalLabel)}</div>
-            <div className={styles.totalAmount}>{formattedTotalAmount}
+            <div className={styles.totalAmount}>
+              {formattedTotalAmount}
               <span className={styles.currencySymbol}>&nbsp;{currencyUnit}</span>
             </div>
           </div>
@@ -163,9 +177,7 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
         </div>
 
         {error ? <p className={styles.error}>{intl.formatMessage(error)}</p> : null}
-
       </Dialog>
     );
   }
-
 }

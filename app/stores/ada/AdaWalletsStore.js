@@ -9,7 +9,7 @@ import type { walletExportTypeChoices } from '../../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../../actions/ada/wallets-actions';
 import type { ImportWalletFromFileResponse } from '../../api/ada/index';
 import type {
-  CreateTransactionResponse, CreateWalletResponse, DeleteWalletResponse,
+  CreateTransactionResponse, CreateWalletResponse, RenameWalletResponse,
   GetWalletsResponse, RestoreWalletResponse,
   GetWalletRecoveryPhraseResponse,
 } from '../../api/common';
@@ -21,7 +21,7 @@ export default class AdaWalletsStore extends WalletStore {
   @observable walletsRequest: Request<GetWalletsResponse> = new Request(this.api.ada.getWallets);
   @observable importFromFileRequest: Request<ImportWalletFromFileResponse> = new Request(this.api.ada.importWalletFromFile);
   @observable createWalletRequest: Request<CreateWalletResponse> = new Request(this.api.ada.createWallet);
-  @observable deleteWalletRequest: Request<DeleteWalletResponse> = new Request(this.api.ada.deleteWallet);
+  @observable renameWalletRequest: Request<RenameWalletResponse> = new Request(this.api.ada.renameWallet);
   @observable sendMoneyRequest: Request<CreateTransactionResponse> = new Request(this.api.ada.createTransaction);
   @observable getWalletRecoveryPhraseRequest: Request<GetWalletRecoveryPhraseResponse> = new Request(this.api.ada.getWalletRecoveryPhrase);
   @observable restoreRequest: Request<RestoreWalletResponse> = new Request(this.api.ada.restoreWallet);
@@ -35,7 +35,7 @@ export default class AdaWalletsStore extends WalletStore {
     const { router, walletBackup, ada } = this.actions;
     const { wallets } = ada;
     wallets.createWallet.listen(this._create);
-    wallets.deleteWallet.listen(this._delete);
+    wallets.renameWallet.listen(this._delete);
     wallets.sendMoney.listen(this._sendMoney);
     wallets.restoreWallet.listen(this._restoreWallet);
     wallets.importWalletFromFile.listen(this._importWalletFromFile);

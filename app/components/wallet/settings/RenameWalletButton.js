@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
-import styles from './DeleteWalletButton.scss';
+import styles from './RenameWalletButton.scss';
 
 const messages = defineMessages({
   label: {
-    id: 'wallet.settings.deleteWalletButtonLabel',
-    defaultMessage: '!!!Delete wallet',
-    description: 'Label for the delete button on wallet settings',
+    id: 'wallet.settings.renameWalletButtonLabel',
+    defaultMessage: '!!!Rename wallet',
+    description: 'Label for the rename button on wallet settings',
   },
 });
 
@@ -14,7 +14,7 @@ type Props = {
   onClick: Function,
 };
 
-export default class DeleteWalletButton extends Component<Props> {
+export default class RenameWalletButton extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
