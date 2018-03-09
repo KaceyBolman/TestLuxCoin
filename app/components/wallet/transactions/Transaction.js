@@ -113,7 +113,7 @@ const assuranceLevelTranslations = defineMessages({
 const stateTranslations = defineMessages({
   [transactionStates.PENDING]: {
     id: 'wallet.transaction.state.pending',
-    defaultMessage: '!!!Transaction pending',
+    defaultMessage: '!!!pending',
     description: 'Transaction state "pending"'
   },
   [transactionStates.FAILED]: {
@@ -231,7 +231,7 @@ export default class Transaction extends Component<Props, State> {
                 </div>
               )}
             <div>
-              <h2>Involved Address</h2>
+              <h2>To Address</h2>
               <span key={`${data.id}-to-${data.address}`} className={styles.address}>
                 {data.address}
               </span>

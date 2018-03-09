@@ -2795,7 +2795,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Transaction pending",
+        "defaultMessage": "!!!pending",
         "description": "Transaction state \"pending\"",
         "end": {
           "column": 3,

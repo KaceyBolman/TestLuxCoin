@@ -95,13 +95,18 @@ export default class WalletSettings extends Component<Props> {
 
           {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
 
-          <div className={styles.actionButtons}>
-            <RenameWalletButton
-              onClick={() => openDialogAction({
-                dialog: RenameWalletConfirmationDialog,
-              })}
-            />
-          </div>
+          <Button
+            className={buttonClasses}
+            label={intl.formatMessage(messages.nextButtonLabel)}
+            onMouseUp={() =>
+              openDialogAction({
+                dialog: WalletSendConfirmationDialog
+              })
+            }
+            // Form can't be submitted in case transaction fees are not calculated
+            disabled={!isTransactionFeeCalculated}
+            skin={<SimpleButtonSkin />}
+          />
 
         </BorderedBox>
 
