@@ -17,6 +17,9 @@ export const ROUTES = {
     SEND: '/wallets/:id/send',
     RECEIVE: '/wallets/:id/receive',
     SETTINGS: '/wallets/:id/settings',
+    MASTERNODES: '/wallets/:id/masternodes',
+    MASTERNODESNET: '/wallets/:id/masternet',
+    MASTERNODESLUX: '/wallets/:id/mymasterlux',
   },
   SETTINGS: {
     ROOT: '/settings',

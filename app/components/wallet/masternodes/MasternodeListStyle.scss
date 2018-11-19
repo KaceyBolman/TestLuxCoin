@@ -1,0 +1,136 @@
+.component {
+  padding: 20px 20px 0;
+  color: var(--theme-bordered-box-text-color);
+}
+
+.categoryTitle {
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  margin-bottom: 30px;
+}
+.list {
+  border-radius: 4px;
+  background-color: var(--theme-transactions-list-background-color);
+  background-blend-mode: lighten;
+  border: solid 1px var(--theme-transactions-list-border-color);
+  padding: 20px;
+  display:flex;
+  margin-bottom: 2px;
+  &:last-child {
+    margin: 0;
+  }
+}
+
+.listRegion {
+  height: 70%;
+}
+
+
+.tbTitle {
+  border-radius: 4px;
+  background-color: #2f4a63;
+  background-blend-mode: lighten;
+  border: solid 1px var(--theme-transactions-list-border-color);
+  padding: 20px;
+  display:flex;
+  margin-bottom: 2px;
+  &:last-child {
+    margin: 0;
+  }
+}
+
+.Activate,
+.Rank {
+  width: 5%;
+} 
+
+.Address,
+.ActiveTime,
+.LastSeen {
+  width: 20%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.Pubkey {
+  width: 30%;
+  word-wrap: break-word;
+}
+
+.Alias {
+  width: 15%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ip {
+  width: 30%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.Status {
+  width: 10%;
+} 
+
+.Collateral {
+  width: 30%;
+  word-wrap: break-word;
+}
+
+.iconRegion {
+  width: 15%;
+}
+
+
+.group {
+  margin-top: 20px;
+
+  &:first-child {
+    margin-top: 0;
+  }
+
+  &:last-child {
+    margin-bottom: 20px;
+  }
+}
+
+.groupDate {
+  font-family: var(--font-regular);
+  font-size: 16px;
+  color: var(--theme-transactions-list-group-date-color);
+  opacity: 0.5;
+  margin-bottom: 10px;
+  margin-left: 20px;
+}
+
+.button {
+  color:white;
+  background-color: #2f4a63;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 20px 30px 20px 0px;
+  width: 20%;
+  cursor: pointer;
+}
+
+.buttonStyle {
+  color:white;
+  background-color: #2f4a63;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 20px 20px 20px 0px;
+  width: 14%;
+  cursor: pointer;
+}
+
+
+.copyIconBig,
+.copyIcon {
+  margin-left: 5px;
+  cursor: pointer;
+  object-fit: contain;
+}

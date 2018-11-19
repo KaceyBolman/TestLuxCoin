@@ -10,6 +10,7 @@ import { getLuxInfo } from './getLuxInfo';
 import { getLuxPeerInfo } from './getLuxPeerInfo';
 import { LOVELACES_PER_LUX } from '../../config/numbersConfig';
 import Wallet from '../../domain/Wallet';
+import MasterNode from '../../domain/MasterNode';
 
 import { getLuxAccounts } from './getLuxAccounts';
 import { getLuxAccountBalance } from './getLuxAccountBalance';
@@ -38,18 +39,17 @@ import { getLuxWalletAccounts } from './getLuxWalletAccounts';
 import { luxTxFee } from './luxTxFee';
 import {getLuxUnspentTransactions} from './getLuxUnspentTransactions';
 import {getLuxEstimatedFee} from './getLuxEstimatedFee';
+import {getLuxMasterNodeGenKey} from './getLuxMasterNodeGenKey';
+import {getLuxMasterNodeList} from './getLuxMasterNodeList';
+import {startLuxMasterNode} from './startLuxMasterNode';
+import {startManyLuxMasterNode} from './startManyLuxMasterNode';
+import {stopLuxMasterNode} from './stopLuxMasterNode';
+import {stopManyLuxMasterNode} from './stopManyLuxMasterNode';
+import {getLuxMasterNodeOutputs} from './getLuxMasterNodeOutputs';
+
+//masternode
 import {encryptLuxWallet} from './encryptLuxWallet';
 
-//import { isValidRedemptionKey, isValidPaperVendRedemptionKey } from '../../../lib/redemption-key-validation';
-//import { renameLuxWallet } from './renameLuxWallet';
-//import { newLuxPayment } from './newLuxPayment';
-//import { redeemLux } from './redeemLux';
-//import { redeemLuxPaperVend } from './redeemLuxPaperVend';
-//import { nextLuxUpdate } from './nextLuxUpdate';
-//import { postponeLuxUpdate } from './postponeLuxUpdate';
-//import { applyLuxUpdate } from './applyLuxUpdate';
-//import { luxTestReset } from './luxTestReset';
-//import { getLuxHistoryByWallet } from './getLuxHistoryByWallet';
 
 import WalletTransaction, { 
   transactionStates,
@@ -96,6 +96,16 @@ import type {
   UpdateWalletResponse,
   UpdateWalletPasswordRequest,
   UpdateWalletPasswordResponse,
+  CreateMasterNodeResponse,
+  GetMasterNodeGenKeyResponse,
+  GetMasterNodeListResponse,
+  StartMasterNodeRequest,
+  StartMasterNodeResponse,
+  StartManyMasterNodeResponse,
+  StopMasterNodeRequest,
+  StopMasterNodeResponse,
+  StopManyMasterNodeResponse,
+  GetMasterNodeOutputsResponse
 } from '../common';
 
 import {
@@ -356,13 +366,13 @@ export default class LuxApi {
     try {
       //const walletId = request.walletId;
       const walletId = '';//default account
-
+      const { count, skip} = request;
       //const mostRecentBlockNumber: LuxBlockNumber = await getLuxBlockNumber();
 
       let transactions: LuxTransactions = await getLuxTransactions({
         walletId,
-        count: 1000,
-        skip: 0
+        count,
+        skip
       });
       /*const sendTransactions: LuxTransactions = await getLuxTransactions({
         walletId: '',
@@ -792,8 +802,155 @@ export default class LuxApi {
       throw new GenericApiError();
     }
   }
-}
 
+  /////////////////////////////// MASTERNODE API ///////////////////////////////////
+
+  async createMasterNode(alias: string): Promise<CreateMasterNodeResponse> {
+    Logger.debug('LuxApi::createMasterNode called');
+    try {
+      
+      const { walletId} = alias;
+      const response: LuxAddress = await getLuxAccountAddress({ walletId });
+      return response;
+    } catch (error) {
+      Logger.error('LuxApi::createMasterNode error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  }
+
+  async getMasterNodeGenKey(): Promise<GetMasterNodeGenKeyResponse> {
+    Logger.debug('LuxApi::getMasterNodeGenKey called');
+    try {
+      const response = await getLuxMasterNodeGenKey();
+      return response;
+    } catch (error) {
+      Logger.error('LuxApi::getMasterNodeGenKey error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  }
+
+  async getMasterNodeList(): Promise<GetMasterNodeListResponse> {
+    Logger.debug('LuxApi::getMasterNodeList called');
+    try {
+      let attribute = 'rank'
+      const masterNodesRank = await getLuxMasterNodeList({attribute});
+      attribute = 'active'
+      const masterNodesActive = await getLuxMasterNodeList({attribute});
+      attribute = 'activeseconds'
+      const masterNodesActiveSeconds = await getLuxMasterNodeList({attribute});
+      attribute = 'lastseen'
+      const masterNodesLastSeen = await getLuxMasterNodeList({attribute});
+      attribute = 'pubkey'
+      const masterNodesPubkey = await getLuxMasterNodeList({attribute});
+      
+      return await Promise.all(
+        Object.keys(masterNodesRank).map(async id => {
+            const address = id;
+            const rank = masterNodesRank[id];
+            const active = masterNodesActive[id];
+            const activeSeconds = masterNodesActiveSeconds[id];
+            const lastSeen = masterNodesLastSeen[id];
+            const pubkey = masterNodesPubkey[id];
+            return new MasteNode({
+              address,
+              rank,
+              active,
+              activeSeconds,
+              lastSeen,
+              pubKey
+            });
+        })
+      );
+    } catch (error) {
+      Logger.error('LuxApi::getMasterNodeGenKey error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  }
+
+  async startMasterNode(request: StartMasterNodeRequest): Promise<StartMasterNodeResponse> {
+    Logger.debug('LuxApi::startMasterNode called');
+    try {
+      const {alias, password} = request;
+      const result = await startLuxMasterNode({alias, password});
+      return new Promise((resolve) => resolve({
+        alias: alias,
+        result: result
+      }));
+    } catch (error) {
+      Logger.error('LuxApi::startMasterNode error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  }
+
+  async startManyMasterNode(password: string): Promise<StartManyMasterNodeResponse> {
+    Logger.debug('LuxApi::startManyMasterNode called');
+    try {
+      const response = await startManyLuxMasterNode({password});
+      const details = response.detail;
+      return await Promise.all(
+        Object.entries(details).map(async detail => {
+            const alias = detail[1].alias;
+            const result = detail[1].result;
+            return new Promise((resolve) => resolve({
+              alias: alias,
+              result: result
+            }));
+        })
+      );
+    } catch (error) {
+      Logger.error('LuxApi::startManyMasterNode error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  }
+
+  async stopMasterNode(request: StopMasterNodeRequest): Promise<StopMasterNodeResponse> {
+    Logger.debug('LuxApi::stopMasterNode called');
+    try {
+      const {alias, password} = request;
+      const result = await stopLuxMasterNode({alias, password});
+      return new Promise((resolve) => resolve({
+        alias: alias,
+        result: result
+      }));
+    } catch (error) {
+      Logger.error('LuxApi::stopMasterNode error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  }
+
+  async stopManyMasterNode(password: string): Promise<StopManyMasterNodeResponse> {
+    Logger.debug('LuxApi::stopManyMasterNode called');
+    try {
+      const response = await stopManyLuxMasterNode({password});
+      const details = response.detail;
+      
+      return await Promise.all(
+        Object.entries(details).map(async detail => {
+            const alias = detail[1].alias;
+            const result = detail[1].result;
+            return new Promise((resolve) => resolve({
+              alias: alias,
+              result: result
+            }));
+        })
+      );
+    } catch (error) {
+      Logger.error('LuxApi::stopManyMasterNode error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  }
+
+  async getMasterNodeOutputs(): Promise<GetMasterNodeOutputsResponse> {
+    Logger.debug('LuxApi::getMasterNodeOutputs called');
+    try {
+      const response = await getLuxMasterNodeOutputs();
+      return stringifyData(response);
+    } catch (error) {
+      Logger.error('LuxApi::getMasterNodeOutputs error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  }
+}
 // ========== TRANSFORM SERVER DATA INTO FRONTEND MODELS =========
 
 const _createWalletTransactionFromServerData = async (
